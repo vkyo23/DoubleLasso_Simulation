@@ -99,3 +99,5 @@ for (s in 1:100) {
 }
 
 write.csv(data, 'data/simdata_true.csv', row.names = FALSE)
+
+

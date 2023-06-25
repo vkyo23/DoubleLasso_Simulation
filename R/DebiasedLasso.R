@@ -4,6 +4,7 @@ suppressMessages(library(tidyverse))
 suppressMessages(library(glmnet))
 suppressMessages(library(doParallel))
 suppressMessages(library(doRNG))
+suppressMessages(library(gt))
 rm(list = ls())
 set.seed(1)
 
@@ -209,15 +210,16 @@ fit_true
 stopCluster(cl)
 
 # 3. Visualization -----
-pdf('output/debiased_lasso.pdf', width = 10, height = 6)
-fit_k100 %>% 
+d <- fit_k100 %>% 
   pivot_longer(cols = everything()) %>% 
   mutate(K = 'K = 100') %>% 
   bind_rows(
     fit_k200 %>% 
       pivot_longer(cols = everything()) %>% 
       mutate(K = 'K = 200')
-  ) %>% 
+  ) 
+pdf('output/debiased_lasso.pdf', width = 10, height = 6)
+d %>% 
   bind_rows(
     fit_true %>% 
       pivot_longer(cols = everything()) %>% 
@@ -242,3 +244,18 @@ fit_k100 %>%
         axis.title = element_text(size = 13),
         strip.text.x = element_text(size = 10))
 dev.off()
+
+tab <- d %>% 
+  group_by(name, K) %>% 
+  summarise(Mean = mean(value),
+            Bias = mean(abs(value - tau)),
+            RMSE = sqrt(mean((value - tau)^2)),
+            .groups = 'drop') %>% 
+  mutate(
+    across(Mean:RMSE, round, 2)
+  ) %>% 
+  gt(
+    rowname_col = 'name',
+    groupname_col = 'K'
+  ) 
+gtsave(tab, 'output/DL_table.tex')

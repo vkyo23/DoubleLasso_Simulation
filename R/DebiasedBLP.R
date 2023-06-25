@@ -1,4 +1,5 @@
 suppressMessages(library(tidyverse))
+suppressMessages(library(gt))
 rm(list = ls())
 
 # 1. Load data -----
@@ -33,13 +34,13 @@ alpha_true <- true[2, ] %>%
 d <- tibble(`Post-Single` = alpha_ps100, Debiased = alpha_deb100) %>% 
   mutate(id = row_number()) %>% 
   pivot_longer(-id) %>% 
-  mutate(K = 'K = 100', .before = name) #%>% 
-  #bind_rows(
-  #  tibble(`Post-Single` = alpha_ps200, Debiased = alpha_deb200) %>% 
-  #    mutate(id = row_number()) %>% 
-  #    pivot_longer(-id) %>% 
-  #    mutate(K = 'K = 200', .before = name)
-  #) 
+  mutate(K = 'K = 100', .before = name) %>% 
+  bind_rows(
+   tibble(`Post-Single` = alpha_ps200, Debiased = alpha_deb200) %>%
+     mutate(id = row_number()) %>%
+     pivot_longer(-id) %>%
+     mutate(K = 'K = 200', .before = name)
+  )
 pdf('output/BLP_Lasso.pdf', width = 10, height = 6)
 d %>% 
   ggplot(aes(x = value, fill = name)) +
@@ -91,8 +92,17 @@ d %>%
 dev.off()
 
 # 3. Descriptive statistics -----
-d %>% 
+tab <- d %>% 
   group_by(K, name) %>% 
-  summarise(bias = mean(abs(value - 5)),
-            rmse = sqrt(mean((value - 5)^2)),
-            .groups = 'drop')
+  summarise(Mean = mean(value),
+            Bias = mean(abs(value - 5)),
+            RMSE = sqrt(mean((value - 5)^2)),
+            .groups = 'drop')  %>% 
+  mutate(
+    across(Mean:RMSE, round, 2)
+  ) %>% 
+  gt(
+    rowname_col = 'name',
+    groupname_col = 'K'
+  ) 
+gtsave(tab, 'output/BLP_table.tex')
