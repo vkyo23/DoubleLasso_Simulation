@@ -2,6 +2,8 @@
 
 In this repository, I provide some simulation codes for Double-Lasso models. The simulations include simple Double Selection Lasso (Belloni, Chernozhukov & Hansen 2014), and simpler version of BLP-2LASSO (Gillen, *et al*. 2019). The former simulation is done by only `R`, and the latter (BLP) is done by `C++`, `R` and `Python` (for MPEC with `Pyomo`). 
 
+**NOTE: This repository is for my practice implementation of DL models!!!!!**
+
 ## Description
 
 - Python: Directory of `Python` codes
