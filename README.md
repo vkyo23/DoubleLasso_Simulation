@@ -15,13 +15,13 @@ In this repository, I provide some simulation codes for Double-Lasso models. The
 
 ## Implementation
 
-In terminal, please run the following code:
+In terminal, run the following code:
 
 ```{sh}
 sh run.sh
 ```
 
-## Refrences
+## References
 
 1. Belloni, A., Chernozhukov, V., & Hansen, C. (2014). "Inference on treatment effects after selection among high-dimensional controls". *The Review of Economic Studies*, 81(2), 608-650.
 

@@ -82,7 +82,7 @@ fit_k100 <- foreach(m = 1:100, .combine = rbind, .packages = c('tidyverse', 'glm
   ## Generating variables
   df <- dgp(N, K, tau, gamma, beta, Sigma)
   
-  ## Post-Single Lasso estimator
+  ## Single Lasso estimator
   sel1 <- df %>% 
     select(Y, starts_with('X')) %>% 
     cv_lasso(Y ~ ., data = .)
@@ -92,7 +92,7 @@ fit_k100 <- foreach(m = 1:100, .combine = rbind, .packages = c('tidyverse', 'glm
     select(Y, D, all_of(imp1)) %>% 
     lm(Y ~ ., data = .)
   
-  ## Debiased Lasso estimator
+  ## Double Lasso estimator
   sel1_deb <- df %>% 
     select(Y, starts_with('X')) %>% 
     cv_lasso(Y ~ ., data = .)
@@ -107,8 +107,8 @@ fit_k100 <- foreach(m = 1:100, .combine = rbind, .packages = c('tidyverse', 'glm
     select(Y, D, all_of(imp_deb)) %>% 
     lm(Y ~ ., data = .)
   
-  out <- tibble(`Post-Single` = coef(fit_ps)['D'],
-                `Debiased` = coef(fit_deb)['D'])
+  out <- tibble(`Single` = coef(fit_ps)['D'],
+                `Double` = coef(fit_deb)['D'])
   return(out)
 }
 fit_k100
@@ -140,7 +140,7 @@ fit_k200 <- foreach(m = 1:100, .combine = rbind, .packages = c('tidyverse', 'glm
   ## Generating variables
   df <- dgp(N, K, tau, gamma, beta, Sigma)
   
-  ## Post-Single Lasso estimator
+  ## Single Lasso estimator
   sel1 <- df %>% 
     select(Y, starts_with('X')) %>% 
     cv_lasso(Y ~ ., data = .)
@@ -150,7 +150,7 @@ fit_k200 <- foreach(m = 1:100, .combine = rbind, .packages = c('tidyverse', 'glm
     select(Y, D, all_of(imp1)) %>% 
     lm(Y ~ ., data = .)
   
-  ## Debiased Lasso estimator
+  ## Double Lasso estimator
   sel1_deb <- df %>% 
     select(Y, starts_with('X')) %>% 
     cv_lasso(Y ~ ., data = .)
@@ -165,8 +165,8 @@ fit_k200 <- foreach(m = 1:100, .combine = rbind, .packages = c('tidyverse', 'glm
     select(Y, D, all_of(imp_deb)) %>% 
     lm(Y ~ ., data = .)
   
-  out <- tibble(`Post-Single` = coef(fit_ps)['D'],
-                `Debiased` = coef(fit_deb)['D'])
+  out <- tibble(`Single` = coef(fit_ps)['D'],
+                `Double` = coef(fit_deb)['D'])
   return(out)
 }
 fit_k200
@@ -218,7 +218,7 @@ d <- fit_k100 %>%
       pivot_longer(cols = everything()) %>% 
       mutate(K = 'K = 200')
   ) 
-pdf('output/debiased_lasso.pdf', width = 10, height = 6)
+pdf('output/Double_lasso.pdf', width = 10, height = 6)
 d %>% 
   bind_rows(
     fit_true %>% 

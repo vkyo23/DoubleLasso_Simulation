@@ -31,12 +31,12 @@ alpha_true <- true[2, ] %>%
   as.numeric()
 
 # 2. Visualization -----
-d <- tibble(`Post-Single` = alpha_ps100, Debiased = alpha_deb100) %>% 
+d <- tibble(`Single` = alpha_ps100, Double = alpha_deb100) %>% 
   mutate(id = row_number()) %>% 
   pivot_longer(-id) %>% 
   mutate(K = 'K = 100', .before = name) %>% 
   bind_rows(
-   tibble(`Post-Single` = alpha_ps200, Debiased = alpha_deb200) %>%
+   tibble(`Single` = alpha_ps200, Double = alpha_deb200) %>%
      mutate(id = row_number()) %>%
      pivot_longer(-id) %>%
      mutate(K = 'K = 200', .before = name)
@@ -59,10 +59,10 @@ d %>%
         strip.text.x = element_text(size = 10))
 dev.off()
 
-## Comparing true model to debiased one
+## Comparing true model to Double one
 pdf('output/BLP_Lasso_deb_true.pdf', width = 10, height = 6)
 d %>%  
-  filter(name == 'Debiased') %>% 
+  filter(name == 'Double') %>% 
   bind_rows(
   tibble(True = alpha_true) %>% 
     mutate(id = row_number()) %>% 
